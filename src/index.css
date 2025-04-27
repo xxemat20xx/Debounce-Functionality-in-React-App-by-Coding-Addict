@@ -1,0 +1,52 @@
+*{
+  text-decoration: none;
+}
+body{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  
+}
+.section{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.cocktails-center{
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  gap: 1rem;
+}
+.cocktails-center article{
+  background-color: tan;
+  width: 50%;
+  padding: 1em;
+  margin: auto;
+}
+.form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+.form input{
+  padding: 1em 3rem;
+  width: 300px;
+  margin: auto;
+  text-align: center;
+  font-size: 1.3rem;
+}
+button{
+  background-color: skyblue;
+  color: #242424;
+  border: none;
+  padding: 1em 4em;
+  border-radius: 2rem;
+  cursor: pointer;
+}
+button:hover{
+  background-color: rgb(57, 112, 134);
+}
