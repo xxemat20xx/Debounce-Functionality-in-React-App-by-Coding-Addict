@@ -50,6 +50,9 @@ const SearchForm = () => {
 
 export default SearchForm;
 
+
+✅ **Using `MEMO` (Simple Version)**
+
 import React, { useState, useMemo } from 'react';
 import { useGlobalContext } from '../Context';
 
