@@ -1,113 +1,102 @@
-# Debounce Functionality in React App by Coding Addict
+# Debounce Search Form in React
 
+This is an example of how to implement a **debounce functionality** in a React app for searching cocktails.
 
-with UseEffect:
-//javascript
-import React, { useEffect, useState } from 'react'
+✅ **Using `useEffect` (Simple Version)**
+
+```javascript
+import React, { useEffect, useState } from 'react';
 import { useGlobalContext } from '../Context';
 
 const SearchForm = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [timeoutId, setTimeoutId] = useState(null); // w/ useEffect
-  const {fetchDrinks} = useGlobalContext();
- 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const { fetchDrinks } = useGlobalContext();
 
-  }
-//   WITH USE EFFECT
-  const searchCocktail = e => {
-    const searchTerm = e.target.value;
-    setSearchTerm(searchTerm);
-    clearTimeout(timeoutId);
-    setTimeoutId(
-        setTimeout(() => {
-            fetchDrinks(searchTerm)
-        }, 1000)
-    );
-  }
   useEffect(() => {
-    return () => {
-        clearTimeout(timeoutId)
-    }
-  },[timeoutId])
+    const timeoutId = setTimeout(() => {
+      fetchDrinks(searchTerm);
+    }, 800);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, fetchDrinks]);
+
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetchDrinks(searchTerm);
+  };
 
   return (
     <div>
-        <form className="form" onSubmit={handleSubmit}>
-            <div className="form-control">
-               
-                <br />
-                <input
-                type='text'
-                name='name'
-                id='name'
-                onChange={searchCocktail}
-                value={searchTerm}
-                placeholder='Search your favorite drinks'
-                />
-            </div>
-            <div>
-            <button type='submit'>Submit</button>
-            </div>
-            
-        </form>
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="form-control">
+          <input
+            type="text"
+            name="name"
+            id="name"
+            onChange={handleChange}
+            value={searchTerm}
+            placeholder="Search your favorite drinks"
+          />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default SearchForm
-<br />
-//javascript
+export default SearchForm;
 
-//WITH USE MEMO
-import React, { useMemo, useEffect, useState } from 'react'
+import React, { useState, useMemo } from 'react';
 import { useGlobalContext } from '../Context';
 
 const SearchForm = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [timeoutId, setTimeoutId] = useState(null); // w/ useEffect
-  const {fetchDrinks} = useGlobalContext();
- 
+  const { fetchDrinks } = useGlobalContext();
+
+  const debounce = (func, delay = 800) => {
+    let timeoutId;
+    return (...args) => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  };
+
+  const debouncedFetchDrinks = useMemo(() => debounce(fetchDrinks), [fetchDrinks]);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    debouncedFetchDrinks(value);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    fetchDrinks(searchTerm);
+  };
 
-  }
-// with useMemo
-  const searchCocktail = () => {
-    let timeoutId;
-    return (e) => {
-        const searchInput = e.target.value;
-        setSearchTerm(searchInput);
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-                fetchDrinks(searchInput);
-        }, 1000);
-    }
-  }
-  const debounceSearchCocktail = useMemo(() => searchCocktail(),[]);
   return (
     <div>
-        <form className="form" onSubmit={handleSubmit}>
-            <div className="form-control">
-               
-                <br />
-                <input
-                type='text'
-                name='name'
-                id='name'
-                onChange={debounceSearchCocktail}
-                value={searchTerm}
-                placeholder='Search your favorite drinks'
-                />
-            </div>
-            <div>
-            <button type='submit'>Submit</button>
-            </div>
-            
-        </form>
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="form-control">
+          <input
+            type="text"
+            name="name"
+            id="name"
+            onChange={handleChange}
+            value={searchTerm}
+            placeholder="Search your favorite drinks"
+          />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default SearchForm
+export default SearchForm;
